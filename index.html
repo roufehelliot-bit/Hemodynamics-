@@ -2,10 +2,462 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Hello Hemodynamics</title>
+  <title>Cardiac Hemodynamics Module</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 0;
+      margin: 0;
+    }
+
+    header {
+      background: #020617;
+      border-bottom: 1px solid #1f2937;
+      padding: 1.5rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .section {
+      background: #020617;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #1f2937;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.8);
+    }
+
+    .section h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #f9fafb;
+    }
+
+    .section h3 {
+      font-size: 1.05rem;
+      margin-top: 0.75rem;
+      margin-bottom: 0.35rem;
+      color: #e5e7eb;
+    }
+
+    p {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: #d1d5db;
+    }
+
+    ul {
+      margin-left: 1.25rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.25rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 0.75rem;
+      border: 1px solid #1f2937;
+      padding: 1rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: #22c55e1a;
+      color: #4ade80;
+      margin-bottom: 0.5rem;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+        "Courier New", monospace;
+      background: #020617;
+      padding: 0.05rem 0.25rem;
+      border-radius: 0.25rem;
+      font-size: 0.85rem;
+    }
+
+    .control-group {
+      margin-bottom: 1rem;
+    }
+
+    .control-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+      color: #e5e7eb;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .pv-loop-box {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-top: 0.75rem;
+      background: radial-gradient(circle at top left, #1d4ed8, #020617);
+      border: 1px solid #1d4ed8;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+    }
+
+    .pv-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .pv-pill {
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .quiz-question {
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px dashed #1f2937;
+    }
+
+    .quiz-question:last-child {
+      border-bottom: none;
+    }
+
+    .quiz-question p {
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .quiz-options label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+      cursor: pointer;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: linear-gradient(to right, #22c55e, #14b8a6);
+      color: #020617;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      filter: brightness(0.95);
+    }
+
+    .quiz-result {
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .quiz-result.good {
+      color: #4ade80;
+    }
+
+    .quiz-result.okay {
+      color: #facc15;
+    }
+
+    .quiz-result.bad {
+      color: #f97373;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 1.5rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, Hemodynamics 👋</h1>
-  <p>If you can see this, GitHub Pages is working.</p>
+  <header>
+    <h1>Cardiac Hemodynamics: Interactive Module</h1>
+    <p>Self-paced teaching for residents &amp; students – designed around right-heart cath and shock states.</p>
+  </header>
+
+  <main>
+    <section class="section" id="intro">
+      <h2>1. Overview &amp; Learning Objectives</h2>
+      <p>
+        This micro-module is meant as a quick, interactive primer you can complete in 15–20 minutes. It assumes
+        basic cardiovascular physiology and focuses on how to think through hemodynamics at the bedside.
+      </p>
+      <h3>Objectives</h3>
+      <ul>
+        <li>Define preload, afterload, and contractility in clinically useful language.</li>
+        <li>Relate thermodilution or Fick cardiac output to blood pressure and perfusion.</li>
+        <li>Interpret simple changes in a pressure–volume (PV) loop with common ICU scenarios.</li>
+      </ul>
+      <div class="pv-pill-row">
+        <span class="pv-pill">Preload</span>
+        <span class="pv-pill">Afterload</span>
+        <span class="pv-pill">Contractility</span>
+        <span class="pv-pill">CO / CI</span>
+        <span class="pv-pill">SVR / PVR</span>
+      </div>
+    </section>
+
+    <section class="section" id="core">
+      <h2>2. Core Hemodynamic Concepts</h2>
+      <div class="grid">
+        <div class="card">
+          <span class="tag">Preload</span>
+          <p>
+            Think of preload as <strong>how full the ventricle is at the end of diastole</strong>.
+            Clinically, we approximate this with EDV/EDP, wedge, or right atrial pressure.
+          </p>
+          <ul>
+            <li>↑ Preload → ↑ stroke volume (up to a point).</li>
+            <li>Flattened Frank–Starling curve in systolic dysfunction.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag">Afterload</span>
+          <p>
+            Afterload is the <strong>resistance the ventricle ejects against</strong>, approximated by
+            systemic vascular resistance (SVR) on the left and pulmonary vascular resistance (PVR) on the right.
+          </p>
+          <ul>
+            <li>↑ Afterload → ↓ stroke volume (if contractility fixed).</li>
+            <li>Clinically: hypertension, vasopressors, aortic stenosis.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag">Contractility</span>
+          <p>
+            Intrinsic squeeze of the myocardium, independent of preload and afterload. In practice:
+            inotropes (dobutamine, milrinone), ischemia, cardiomyopathy.
+          </p>
+          <ul>
+            <li>↑ Contractility → ↑ stroke volume at a given preload.</li>
+            <li>PV loop ESPVR slope becomes steeper.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="margin-top:1rem;">Helpful mental formulas</h3>
+      <ul>
+        <li><code>CO = HR × SV</code></li>
+        <li><code>MAP ≈ CO × SVR</code></li>
+        <li><code>SV ≈ EDV − ESV</code></li>
+      </ul>
+    </section>
+
+    <section class="section" id="pv-loop">
+      <h2>3. Interactive: How Preload &amp; Afterload Shape the PV Loop</h2>
+      <p>
+        Use the sliders to adjust preload and afterload. Read the explanation to connect what you’d expect
+        the PV loop and blood pressure to do in a typical left ventricle.
+      </p>
+
+      <div class="control-group">
+        <label for="preload">
+          Preload
+          <span id="preloadValue">Normal</span>
+        </label>
+        <input id="preload" type="range" min="0" max="2" value="1" />
+      </div>
+
+      <div class="control-group">
+        <label for="afterload">
+          Afterload
+          <span id="afterloadValue">Normal</span>
+        </label>
+        <input id="afterload" type="range" min="0" max="2" value="1" />
+      </div>
+
+      <div class="pv-loop-box" id="pvText">
+        With normal preload and afterload, the PV loop has a normal width (stroke volume) and height
+        (systolic pressure). Cardiac output and blood pressure are within a reasonable range.
+      </div>
+    </section>
+
+    <section class="section" id="quiz">
+      <h2>4. Quick Check: 3 Question Quiz</h2>
+
+      <div class="quiz-question" data-correct="b">
+        <p>1. In isolated cardiogenic shock from LV failure, which change is most typical?</p>
+        <div class="quiz-options">
+          <label><input type="radio" name="q1" value="a" /> Low wedge, low SVR, high cardiac index</label>
+          <label><input type="radio" name="q1" value="b" /> High wedge, high SVR, low cardiac index</label>
+          <label><input type="radio" name="q1" value="c" value="c" /> Low wedge, high SVR, normal cardiac index</label>
+        </div>
+      </div>
+
+      <div class="quiz-question" data-correct="c">
+        <p>2. Increasing afterload without changing contractility will usually:</p>
+        <div class="quiz-options">
+          <label><input type="radio" name="q2" value="a" /> Increase stroke volume</label>
+          <label><input type="radio" name="q2" value="b" /> Leave stroke volume unchanged</label>
+          <label><input type="radio" name="q2" value="c" /> Decrease stroke volume</label>
+        </div>
+      </div>
+
+      <div class="quiz-question" data-correct="a">
+        <p>3. On a PV loop, giving an inotrope (e.g., dobutamine) primarily:</p>
+        <div class="quiz-options">
+          <label><input type="radio" name="q3" value="a" /> Steepens the ESPVR (end-systolic) line</label>
+          <label><input type="radio" name="q3" value="b" /> Shifts the entire loop to the right</label>
+          <label><input type="radio" name="q3" value="c" /> Eliminates isovolumic contraction</label>
+        </div>
+      </div>
+
+      <button class="btn" id="submitQuiz">Check my answers</button>
+      <div id="quizResult" class="quiz-result"></div>
+    </section>
+
+    <footer>
+      Built as a simple HTML/JS module – you can expand this with more cases, images, or real RHC tracings.
+    </footer>
+  </main>
+
+  <script>
+    const preloadSlider = document.getElementById("preload");
+    const afterloadSlider = document.getElementById("afterload");
+    const preloadValue = document.getElementById("preloadValue");
+    const afterloadValue = document.getElementById("afterloadValue");
+    const pvText = document.getElementById("pvText");
+
+    function describeLevel(value) {
+      if (value === "0") return "Low";
+      if (value === "1") return "Normal";
+      if (value === "2") return "High";
+      return "Normal";
+    }
+
+    function updatePVText() {
+      const preload = preloadSlider.value;
+      const afterload = afterloadSlider.value;
+
+      preloadValue.textContent = describeLevel(preload);
+      afterloadValue.textContent = describeLevel(afterload);
+
+      let text = "";
+
+      if (preload === "0" && afterload === "1") {
+        text =
+          "Low preload with normal afterload: the PV loop is narrow (low stroke volume) but not especially tall. Think hypovolemia or over-diuresis – blood pressure may drop, but SVR can be normal.";
+      } else if (preload === "2" && afterload === "1") {
+        text =
+          "High preload with normal afterload: the loop widens (more stroke volume) if the LV can tolerate it. This is like a fluid-responsive patient whose heart is still on the ascending Frank–Starling curve.";
+      } else if (preload === "1" && afterload === "2") {
+        text =
+          "Normal preload with high afterload: the loop becomes taller but often narrower – higher systolic pressure but less stroke volume. Think acute severe hypertension or high-dose vasopressors.";
+      } else if (preload === "2" && afterload === "2") {
+        text =
+          "High preload and high afterload: the LV is overfilled and pushing against a tight clamp – wedge is high, SVR is high, and stroke volume is impaired. This is a typical pattern in decompensated systolic HF.";
+      } else if (preload === "0" && afterload === "0") {
+        text =
+          "Low preload and low afterload: the ventricle is underfilled and the vascular tree is dilated. This resembles distributive shock with hypovolemia – low wedge, low SVR, low stroke volume.";
+      } else if (preload === "1" && afterload === "0") {
+        text =
+          "Normal preload with low afterload: the loop is short but can widen if contractility is intact. This is what you aim for when you treat cardiogenic shock with vasodilators once blood pressure tolerates it.";
+      } else if (preload === "2" && afterload === "0") {
+        text =
+          "High preload and low afterload: a very full ventricle ejecting into a wide-open system. Stroke volume may be high, but if contractility is weak, this can still be poorly tolerated.";
+      } else {
+        text =
+          "With these settings, think about how the PV loop width (stroke volume) and height (systolic pressure) change. Translate that back to bedside numbers: wedge, SVR, and cardiac index.";
+      }
+
+      pvText.textContent = text;
+    }
+
+    preloadSlider.addEventListener("input", updatePVText);
+    afterloadSlider.addEventListener("input", updatePVText);
+    updatePVText();
+
+    const submitQuizBtn = document.getElementById("submitQuiz");
+    const quizResult = document.getElementById("quizResult");
+
+    submitQuizBtn.addEventListener("click", () => {
+      const questions = document.querySelectorAll(".quiz-question");
+      let total = questions.length;
+      let correct = 0;
+
+      questions.forEach((q) => {
+        const correctValue = q.getAttribute("data-correct");
+        const selected = q.querySelector("input[type='radio']:checked");
+        if (selected && selected.value === correctValue) {
+          correct++;
+        }
+      });
+
+      if (correct === 0) {
+        quizResult.textContent = "0/" + total + " – worth a quick re-read of the core concepts above.";
+        quizResult.className = "quiz-result bad";
+      } else if (correct < total) {
+        quizResult.textContent =
+          correct +
+          "/" +
+          total +
+          " – solid start. Review the explanations and adjust the sliders again to reinforce the patterns.";
+        quizResult.className = "quiz-result okay";
+      } else {
+        quizResult.textContent =
+          correct +
+          "/" +
+          total +
+          " – nice! You’ve got the basic hemodynamic patterns down. Try applying them to a real cardiogenic vs distributive shock case next.";
+        quizResult.className = "quiz-result good";
+      }
+    });
+  </script>
 </body>
 </html>
